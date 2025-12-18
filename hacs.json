@@ -1,5 +1,5 @@
 {
-    "name": "Uptime Card (with outages)",
+    "name": "Uptime Card With Outages",
     "render_readme": true,
     "filename": "uptime-card.js"
 }
