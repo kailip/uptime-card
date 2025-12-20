@@ -251,6 +251,7 @@ export class UptimeCard extends LitElement {
    * @param state The current state of the entity.
    */
   private isOk(state?: string): boolean | undefined {
+    console.log('Calling isOk', state);
     const { ok, ko, entity, none } = this.config;
 
     if (state == undefined) return undefined;
