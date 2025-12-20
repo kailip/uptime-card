@@ -261,10 +261,13 @@ export class UptimeCard extends LitElement {
       if (ok == undefined && ko == undefined) {
         const is_binary_entity =
           entity.startsWith('binary_sensor.') || entity.startsWith('switch.') || entity.startsWith('input_boolean.');
+        const is_sensor_entity = entity.startsWith('sensor.');
         if (entity != undefined && is_binary_entity) {
           if (state == 'on') return true;
           else if (state == 'off') return false;
           return undefined;
+        } else if (entity != undefined && is_sensor_entity) {
+          return state != 'off';
         }
         return undefined;
       } else if (ok == undefined) return true;
@@ -417,9 +420,9 @@ export class UptimeCard extends LitElement {
         lastPointState = fakePoint.y;
         lastPointTime = fakePoint.x;
       }
-      if (point.y != lastPointState) {
+      if (lastPointState != 'on') {
         cleanedPoints.push(point);
-        lastPointState = point.y;
+        lastPointState = 'on';
         lastPointTime = point.x;
       }
     }
