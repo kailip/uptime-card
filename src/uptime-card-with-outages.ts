@@ -42,15 +42,15 @@ console.info(`%c uptime-card \n   ${CARD_VERSION}    `, 'color: white; backgroun
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'uptime-card',
-  name: 'Uptime Card',
+  type: 'uptime-card-with-outages',
+  name: 'Uptime Card (with outages)',
   description: 'The uptime card show you the history of your binary sensors in a cool way.',
 });
 
-@customElement('uptime-card')
+@customElement('uptime-card-with-outages')
 export class UptimeCard extends LitElement {
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
-    return document.createElement('uptime-card-editor');
+    return document.createElement('uptime-card-with-outages-editor');
   }
 
   public static getStubConfig(): object {
@@ -195,7 +195,9 @@ export class UptimeCard extends LitElement {
     const points = fetchEverything ? fetchedPoints : [...data.points, ...fetchedPoints];
     const index = points.findIndex(point => point.x > this.getMinimumDate());
     const usefulPoints = index == 0 ? points : points.slice(index - 1);
+    console.log('usefulPoints', JSON.stringify(usefulPoints));
     const cleanedPoints = this.cleanPoints(usefulPoints);
+    console.log('cleanedPoints', JSON.stringify(cleanedPoints));
 
     if (cleanedPoints.length > 0) {
       cache = {
@@ -259,10 +261,13 @@ export class UptimeCard extends LitElement {
       if (ok == undefined && ko == undefined) {
         const is_binary_entity =
           entity.startsWith('binary_sensor.') || entity.startsWith('switch.') || entity.startsWith('input_boolean.');
+        const is_sensor_entity = entity.startsWith('sensor.');
         if (entity != undefined && is_binary_entity) {
           if (state == 'on') return true;
           else if (state == 'off') return false;
           return undefined;
+        } else if (entity != undefined && is_sensor_entity) {
+          return state != 'off';
         }
         return undefined;
       } else if (ok == undefined) return true;
@@ -405,12 +410,25 @@ export class UptimeCard extends LitElement {
 
   private cleanPoints(points: Point[]): Point[] {
     const cleanedPoints: Point[] = [];
+    const OUTAGE_INTERVAL = 2 * 60 * 1000;
     let lastPointState: string | undefined = undefined;
+    let lastPointTime: number | undefined = undefined;
     for (const point of points) {
-      if (point.y != lastPointState) {
-        cleanedPoints.push(point);
-        lastPointState = point.y;
+      const pointState = point.y == 'off' ? 'off' : 'on';
+      if (lastPointTime && !point.z && point.x - lastPointTime > OUTAGE_INTERVAL) {
+        const fakePoint = { x: lastPointTime + OUTAGE_INTERVAL, y: 'off', z: true };
+        cleanedPoints.push(fakePoint);
+        lastPointState = fakePoint.y;
+        lastPointTime = fakePoint.x;
       }
+      if (lastPointState != pointState || point.z) {
+        cleanedPoints.push({ x: point.x, y: pointState, z: true });
+      }
+      lastPointState = pointState;
+      lastPointTime = point.x;
+    }
+    if (lastPointTime && lastPointState && lastPointTime != cleanedPoints[cleanedPoints.length - 1].x) {
+      cleanedPoints.push({ x: lastPointTime, y: lastPointState, z: true });
     }
     return cleanedPoints;
   }

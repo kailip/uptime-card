@@ -10,7 +10,7 @@
     "lovelace",
     "custom-cards"
   ],
-  "module": "uptime-card.js",
+  "module": "uptime-card-with-outages.js",
   "repository": "https://github.com/dylandoamaral/uptime-card",
   "author": "Dylan Do Amaral <do.amaral.dylan@gmail.com>",
   "license": "MIT",
