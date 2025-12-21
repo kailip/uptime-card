@@ -31,8 +31,8 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 
 ### Manual install
 
-1. Download and copy `uptime-card.js` from the [latest release](https://github.com/dylandoamaral/uptime-card/releases/latest) into your `config/www` directory.
-2. Add the resource reference inside your `configuration.yaml` with URL `/local/uptime-card.js` and type `module`.
+1. Download and copy `uptime-card-with-outages.js` from the [latest release](https://github.com/dylandoamaral/uptime-card/releases/latest) into your `config/www` directory.
+2. Add the resource reference inside your `configuration.yaml` with URL `/local/uptime-card-with-outages.js` and type `module`.
 3. Add the custom card to your panel and 🚀.
 
 ## Configuration ⚙️

@@ -35,7 +35,7 @@ import {
   UnionProperty,
 } from './types/editor';
 
-@customElement('uptime-card-editor')
+@customElement('uptime-card-with-outages-editor')
 export class UptimeCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @internalProperty() private _config?: CardConfig;

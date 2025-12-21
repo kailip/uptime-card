@@ -32,7 +32,7 @@ const plugins = [
 
 export default [
   {
-    input: 'src/uptime-card.ts',
+    input: 'src/uptime-card-with-outages.ts',
     output: {
       dir: 'dist',
       format: 'es',
