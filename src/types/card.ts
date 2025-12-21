@@ -1,7 +1,7 @@
 export interface Point {
   x: number;
   y: string;
-  z: boolean;
+  z?: boolean;
 }
 
 export interface ApiPoint {
